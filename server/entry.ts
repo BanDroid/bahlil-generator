@@ -42,7 +42,7 @@ export default startApp() as unknown;
 
 function startApp() {
   const app = express();
-  app.use("/api/generate", perMinuteLimiter, dailyQuotaLimiter, generateRoute);
+  app.use("/api/generate", generateRoute);
   apply(app, [
     // Telefunc route. See https://telefunc.com
     telefuncHandler,
