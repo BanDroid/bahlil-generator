@@ -7,8 +7,9 @@ import vikeReact from "vike-react/config";
 
 export default {
   // https://vike.dev/head-tags
-  title: "My Vike App",
-  description: "Demo showcasing Vike",
+  title: "Bahlil Generator",
+  description:
+    "Ubah dirimu menjadi Bahlil agar kamu bisa merasakan sensasi menjadi Ketum Golkar.",
 
   extends: [vikeReact, vikePhoton],
 
