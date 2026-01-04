@@ -4,6 +4,7 @@ export default function Page() {
   const [file, setFile] = useState<File | null | undefined>();
   const [outputUri, setOutputUri] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const pollForResult = async (task_id: string) => {
     while (true) {
@@ -21,6 +22,7 @@ export default function Page() {
   const submit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     if (file) {
+      setError("");
       setOutputUri(null);
       setLoading(true);
       const formData = new FormData();
@@ -31,8 +33,12 @@ export default function Page() {
           body: formData,
         });
         const task = await res.json();
-        const result = await pollForResult(task.task_id);
-        setOutputUri(result);
+        if (task.error) {
+          setError(task.message);
+        } else {
+          const result = await pollForResult(task.task_id);
+          setOutputUri(result);
+        }
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -59,7 +65,24 @@ export default function Page() {
       </form>
 
       <section className="mx-auto w-full max-w-4xl flex flex-col items-stretch p-4">
-        {loading ? (
+        {error ? (
+          <div role="alert" className="alert alert-error">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 shrink-0 stroke-current"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>{error}</span>
+          </div>
+        ) : loading ? (
           <div className="skeleton aspect-3/4"></div>
         ) : outputUri == null ? (
           <></>
